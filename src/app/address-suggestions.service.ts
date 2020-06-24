@@ -10,21 +10,31 @@ import { Address } from './address';
 })
 export class AddressSuggestionsService {
   endpoint: string =
-    'http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&singleLine=';
+    'http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
 
   constructor(private httpClient: HttpClient) {}
 
   searchAddress(term: string): Observable<Address[]> {
-    let url = `${this.endpoint}${term}&maxLocations=5&location=30.270,-97.745&distance=80467.2`;
+    let url = `${this.endpoint}`;
 
     if (!term.trim()) {
       return of([]);
     }
-    return this.httpClient
-      .get<Address[]>(url)
-      .pipe(
-        map((data) => data['candidates'])
-        );
-  }
 
+    const options = {
+      params: {
+        address: term,
+        outFields: '*',
+        forStorage: 'false',
+        f: 'pjson',
+        subregion: 'Travis County',
+        region: 'TX',
+        countryCode: 'USA',
+      },
+    };
+
+    return this.httpClient
+      .get<Address[]>(url, options)
+      .pipe(map((data) => data['candidates']));
+  }
 }
