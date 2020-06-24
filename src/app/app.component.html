@@ -1,14 +1,22 @@
 <div class="container">
-  <form [formGroup]="stateForm">
-    <mat-form-field>
-      <input type="text" matInput placeholder="States Group" formControlName="stateGroup" required [matAutocomplete]="autoGroup">
-        <mat-autocomplete #autoGroup="matAutocomplete">
-          <mat-optgroup *ngFor="let group of stateGroupOptions | async" [label]="group.letter">
-            <mat-option *ngFor="let name of group.names" [value]="name">
-              {{name}}
-            </mat-option>
-        </mat-optgroup>
-      </mat-autocomplete>
-    </mat-form-field>
+  <form>
+    <div class="form-group search-bar">
+      <!-- Search -->
+      <input type="text" class="form-control" placeholder="Enter Address" #searchBox (input)="search(searchBox.value)">
+
+      <!-- Progres -->
+      <div class="loader" *ngIf="loading">
+        <div class="c-three-dots-loader"></div>
+      </div>
+    </div>
+
+    <!-- Search Result -->
+    <div class="list-group">
+      <div class="list-group-item list-group-item-action" *ngFor="let address of addresses$ | async">
+            <p class="mt-0">{{ address.address }}</p>
+            <!-- <p class="mt-0">{{ address.location }}</p>
+            <p class="mt-0">{{ address.score }}</p> -->
+      </div>
+    </div>
   </form>
 </div>
